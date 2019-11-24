@@ -143,7 +143,7 @@ public function handle(ActionFields $fields, Collection $models)
 
 The settings key is optional as it comes with some good defaults, but feel free to override it to suit your needs.
 
-```
+```php
 MegaFilter::make([
     'settings' => [
 
