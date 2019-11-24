@@ -117,7 +117,7 @@
                     </select>
 
                     <button class="btn btn-default btn-primary cursor-pointer"
-                            :disabled="isResourceTableEmpty || isResourceTableLoading"
+                            :disabled="isResourceTableEmpty || isResourceTableLoading || (filters.length > 1 && !selectedActionKey)"
                             @click="determineActionStrategy">
 
                         <div v-if="isLonelyAction">
@@ -127,7 +127,7 @@
                         </div>
 
                         <div v-else>
-                            Run Action on all matching resources ({{ selectedResourcesCount }})
+                            {{ __('Run Action on all matching resources (:count)', { count: selectedResourcesCount }) }}
                         </div>
 
                     </button>
@@ -138,8 +138,6 @@
                      class="text-sm font-bold text-success-dark w-full card bg-success-light justify-between shadow-none p-4 flex flex-wrap mt-2">
 
                     {{ message }}
-
-                    <span>filters</span>
 
                 </div>
 
@@ -170,9 +168,9 @@
 
     import { CollapseTransition, FadeTransition } from 'vue2-transitions'
     import { Filterable, InteractsWithQueryString } from 'laravel-nova'
-    import HandlesActions from './HandlesActions'
-    import Section from './Section'
-    import Button from './Button'
+    import HandlesActions from './mixins/HandlesActions'
+    import Section from './elements/Section'
+    import Button from './elements/Button'
 
     export default {
         mixins: [ Filterable, InteractsWithQueryString, HandlesActions ],
@@ -404,11 +402,6 @@
         text-transform: capitalize;
         color: var(--black);
 
-    }
-
-    .btn-unselected {
-        background-color: var(--primary-50);
-        color: white;
     }
 
 </style>

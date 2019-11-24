@@ -21,3 +21,12 @@
     }
 
 </script>
+
+<style lang="scss" scoped>
+
+    .btn-unselected {
+        background-color: var(--primary-50);
+        color: white;
+    }
+
+</style>

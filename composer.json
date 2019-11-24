@@ -1,6 +1,6 @@
 {
     "name": "digital-creative/nova-mega-filter",
-    "description": "Allows you to control the columns and filters shown on any Nova resource index",
+    "description": "Allows you to control the columns and filters shown on your nova resources.",
     "keywords": [
         "laravel",
         "nova",

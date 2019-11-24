@@ -2,7 +2,6 @@ import { Errors } from 'laravel-nova'
 
 export default {
     props: {
-        resourceName: String,
         pivotActions: {
             default: () => []
         },
@@ -38,15 +37,19 @@ export default {
          * Confirm with the user that they actually want to run the selected action.
          */
         openConfirmationModal() {
+
             this.confirmActionModalOpened = true
+
         },
 
         /**
          * Close the action confirmation modal.
          */
         closeConfirmationModal() {
+
             this.confirmActionModalOpened = false
             this.errors = new Errors()
+
         },
 
         /**
@@ -64,6 +67,7 @@ export default {
          * Execute the selected action.
          */
         executeAction() {
+
             this.working = true
 
             if (this.selectedResources.length == 0) {
@@ -78,18 +82,23 @@ export default {
                 data: this.actionFormData()
             })
                 .then(response => {
+
                     this.confirmActionModalOpened = false
                     this.handleActionResponse(response.data)
                     this.working = false
+                    
                 })
                 .catch(error => {
+
                     this.working = false
 
                     if (error.response.status === 422) {
                         this.errors = new Errors(error.response.data.errors)
                         Nova.error(this.__('There was a problem executing the action.'))
                     }
+
                 })
+
         },
 
         /**
@@ -143,7 +152,6 @@ export default {
                 Nova.$emit('action-executed')
                 Nova.success(this.__('The action ran successfully!'))
             }
-            this.message = data.message
         }
     },
 

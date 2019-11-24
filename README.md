@@ -4,7 +4,7 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/digital-creative/nova-mega-filter)](https://packagist.org/packages/digital-creative/nova-mega-filter)
 [![License](https://img.shields.io/packagist/l/digital-creative/nova-mega-filter)](https://github.com/dcasia/nova-mega-filter/blob/master/LICENSE)
 
-Allows you to control the columns and filters shown on any Nova resource index
+This package allows you to control the columns and filters shown on your nova resources.
 
 # Installation
 
@@ -80,7 +80,7 @@ MegaFilter::make([
 
 ![Columns in Action](https://raw.githubusercontent.com/dcasia/nova-mega-filter/master/screenshots/columns-gender-filter-demo.png)
 
-> If you want to have filters that are always shown use see the 'filters' option bellow
+> If you want to have filters that are always shown, use the 'filters' option bellow
 
 You can also define columns that can not be toggled by the user and will be always present on the table resource:
 
@@ -125,6 +125,19 @@ MegaFilter::make([
 If you have multiple actions defined, a dropdown will be shown:
 
 ![Columns in Action](https://raw.githubusercontent.com/dcasia/nova-mega-filter/master/screenshots/action-demo-2.png)
+
+The columns selected will also be given to your action, you can access them directly from the request:
+
+```php
+public function handle(ActionFields $fields, Collection $models)
+{
+
+    $columns = json_decode(request()->input('columns'));
+
+    dd($columns);
+
+}
+```
 
 ### Settings
 
