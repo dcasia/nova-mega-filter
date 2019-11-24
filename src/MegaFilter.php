@@ -4,6 +4,7 @@ namespace DigitalCreative\MegaFilter;
 
 use Illuminate\Support\Collection;
 use Laravel\Nova\Card;
+use Laravel\Nova\Filters\Filter;
 
 class MegaFilter extends Card
 {
@@ -108,11 +109,6 @@ class MegaFilter extends Card
 
                 foreach ($filters as $filter) {
 
-                    /**
-                     * Fake evert filter component so it doesnt show up on the default filter picker
-                     */
-                    $filter->withMeta([ 'component' => 'mega-filter-placeholder' ]);
-                    $filter->withMeta([ 'originalComponent' => $filter->component ]);
                     $filter->withMeta([ 'megaFilterFieldAttribute' => $attribute ]);
 
                 }
@@ -123,7 +119,22 @@ class MegaFilter extends Card
              */
             ->prepend($columns->where('permanent', true)->pluck('filters'))
             ->prepend($this->attributes[ 'filters' ])
-            ->flatten();
+            ->flatten()
+            ->map([ $this, 'mockFilter' ]);
+    }
+
+    /**
+     * Fake evert filter component so it doesnt show up on the default filter picker
+     *
+     * @param Filter $filter
+     * @return Filter
+     */
+    public function mockFilter(Filter $filter): Filter
+    {
+        $filter->withMeta([ 'component' => 'mega-filter-placeholder' ]);
+        $filter->withMeta([ 'originalComponent' => $filter->component ]);
+
+        return $filter;
     }
 
     public function settings(): Collection
