@@ -66,7 +66,7 @@ class MegaFilter extends Card
 
             if (is_array($value) && isset($merged[ $key ]) && is_array($merged[ $key ])) {
 
-                $merged[ $key ] = array_merge_recursive_distinct($merged[ $key ], $value);
+                $merged[ $key ] = $this->array_merge_recursive_distinct($merged[ $key ], $value);
 
             } else {
 
