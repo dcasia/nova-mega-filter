@@ -3,6 +3,7 @@
 namespace DigitalCreative\MegaFilter;
 
 use Illuminate\Support\Collection;
+use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 trait HasMegaFilterTrait
@@ -46,7 +47,22 @@ trait HasMegaFilterTrait
 
         return $fields->filter(function ($field) use ($fieldsToShow) {
 
-            return $fieldsToShow->contains($field->attribute);
+            if ($field instanceof Field) {
+
+                /**
+                 * Keep computed fields untouched
+                 */
+                if ($field->computed()) {
+
+                    return true;
+
+                }
+
+                return $fieldsToShow->contains($field->attribute);
+
+            }
+
+            return true;
 
         });
     }
