@@ -152,7 +152,7 @@ class MegaFilter extends Card
         return array_merge([
             'settings' => $this->settings(),
             'actions' => $this->actions(),
-            'columns' => $this->columns()->where('permanent', false)->values(),
+            'columns' => $this->columns(),
             'filters' => $this->filters()
         ], parent::jsonSerialize());
     }

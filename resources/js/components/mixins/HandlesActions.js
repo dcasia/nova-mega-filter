@@ -108,7 +108,7 @@ export default {
 
             const formData = new FormData()
 
-            formData.append('columns', JSON.stringify(this.fieldsModel))
+            formData.append('columns', JSON.stringify({ ...this.permanentColumns, ...this.fieldsModel }))
 
             return _.tap(formData, formData => {
                 formData.append('resources', this.selectedResources)

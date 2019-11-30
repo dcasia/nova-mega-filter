@@ -250,7 +250,15 @@
             },
             columns() {
 
+                return this.card.columns.filter(column => !column.permanent)
+
+            },
+            permanentColumns() {
+
                 return this.card.columns
+                    .filter(column => column.permanent)
+                    .map(({ attribute }) => ({ [ attribute ]: true }))
+                    .reduce((left, right) => ({ ...right, ...left }))
 
             },
             isLonelyAction() {
