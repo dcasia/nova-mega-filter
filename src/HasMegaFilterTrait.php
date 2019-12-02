@@ -5,6 +5,7 @@ namespace DigitalCreative\MegaFilter;
 use Illuminate\Support\Collection;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Laravel\Nova\Contracts\RelatableField;
 
 trait HasMegaFilterTrait
 {
@@ -46,6 +47,12 @@ trait HasMegaFilterTrait
         $fieldsToShow = $this->getFilterState($request);
 
         return $fields->filter(function ($field) use ($fieldsToShow) {
+            
+            if ($field instanceof RelatableField) {
+                
+                return true;
+                
+            }
 
             if ($field instanceof Field) {
 
