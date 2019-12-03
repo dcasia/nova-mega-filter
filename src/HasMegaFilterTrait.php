@@ -4,8 +4,8 @@ namespace DigitalCreative\MegaFilter;
 
 use Illuminate\Support\Collection;
 use Laravel\Nova\Fields\Field;
+use Laravel\Nova\Http\Controllers\ResourceIndexController;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use Laravel\Nova\Contracts\RelatableField;
 
 trait HasMegaFilterTrait
 {
@@ -43,16 +43,19 @@ trait HasMegaFilterTrait
 
     public function availableFields(NovaRequest $request)
     {
+
+        $controller = $request->route()->controller;
         $fields = parent::availableFields($request);
+
+        if (!($controller instanceof ResourceIndexController)) {
+
+            return $fields;
+
+        }
+
         $fieldsToShow = $this->getFilterState($request);
 
         return $fields->filter(function ($field) use ($fieldsToShow) {
-            
-            if ($field instanceof RelatableField) {
-                
-                return true;
-                
-            }
 
             if ($field instanceof Field) {
 
