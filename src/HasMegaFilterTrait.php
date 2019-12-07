@@ -85,11 +85,8 @@ trait HasMegaFilterTrait
     private function getFilterState(NovaRequest $request)
     {
 
-        parse_str(parse_url($request->server('HTTP_REFERER'), PHP_URL_QUERY), $query);
-
         $card = $this->getMegaFilterCard($request);
-
-        $query = collect($query);
+        $query = collect(json_decode(base64_decode($request->input('mega_filter')), true));
 
         $attributes = $card->columns()->filter(function (Column $column) use ($query) {
 
@@ -99,9 +96,9 @@ trait HasMegaFilterTrait
 
             }
 
-            if ($value = $query->get($column->attribute)) {
+            if ((is_bool($value = $query->get($column->attribute)))) {
 
-                return filter_var($value, FILTER_VALIDATE_BOOLEAN);
+                return $value;
 
             }
 

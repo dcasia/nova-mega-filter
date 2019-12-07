@@ -48,8 +48,9 @@
                     <label :for="column.attribute" class="label flex items-center">
 
                         <input :id="column.attribute"
-                               class="checkbox "
+                               class="checkbox"
                                type="checkbox"
+                               :disabled="isResourceTableLoading"
                                v-model="fieldsModel[column.attribute]"
                                @change="refreshResourceTable">
 
@@ -168,11 +169,18 @@
 
     import { CollapseTransition, FadeTransition } from 'vue2-transitions'
     import { Filterable, InteractsWithQueryString } from 'laravel-nova'
-    import HandlesActions from './mixins/HandlesActions'
     import Section from './elements/Section'
     import Button from './elements/Button'
+    import Vue from 'vue'
+    import HandlesActions from '~~nova~~/mixins/HandlesActions'
+    import { escapeUnicode } from '~~nova~~/util/escapeUnicode'
+
+    const observable = Vue.observable({ ready: false })
+
+    export { observable }
 
     export default {
+        name: 'MegaFilter',
         mixins: [ Filterable, InteractsWithQueryString, HandlesActions ],
         components: { Button, FadeTransition, CollapseTransition, Section },
         props: [
@@ -204,7 +212,15 @@
 
             }
 
-            this.initializeFieldsUsingObject(this.$route.query)
+            const encodedFilter = this.$route.query.mega_filter
+
+            this.initializeFieldsUsingObject(
+                encodedFilter ? this.decodeObject(encodedFilter) : {}
+            )
+
+            observable.ready = true
+            observable.resourceName = this.resourceName
+            observable.params = encodedFilter
 
         },
         computed: {
@@ -248,6 +264,24 @@
                 })
 
             },
+            exportedColumns() {
+
+                const attributes = { ...this.permanentColumns, ...this.fieldsModel }
+                const attributesWithLabels = {}
+
+                for (const attribute in attributes) {
+
+                    if (attributes[ attribute ]) {
+
+                        attributesWithLabels[ attribute ] = this.columns.find(column => column.attribute === attribute).label
+
+                    }
+
+                }
+
+                return attributesWithLabels
+
+            },
             columns() {
 
                 return this.card.columns.filter(column => !column.permanent)
@@ -258,7 +292,7 @@
                 return this.card.columns
                     .filter(column => column.permanent)
                     .map(({ attribute }) => ({ [ attribute ]: true }))
-                    .reduce((left, right) => ({ ...right, ...left }))
+                    .reduce((left, right) => ({ ...right, ...left }), {})
 
             },
             isLonelyAction() {
@@ -308,23 +342,34 @@
 
                 return selectedResources
 
-            },
-            queryString() {
-
-                return this.indexComponent.queryString
-
             }
         },
         methods: {
-            initializeFieldsUsingObject(query = {}) {
+            actionFormData() {
+
+                const formData = new FormData()
+
+                formData.append('columns', JSON.stringify(this.exportedColumns))
+
+                return _.tap(formData, formData => {
+
+                    formData.append('resources', this.selectedResources)
+
+                    _.each(this.selectedAction.fields, field => {
+                        field.fill(formData)
+                    })
+
+                })
+            },
+            initializeFieldsUsingObject(data = {}) {
 
                 const attributes = this.columns.map(column => column.attribute)
                 const allValues = attributes.map(attribute => {
 
-                    if (query.hasOwnProperty(attribute)) {
+                    if (data.hasOwnProperty(attribute)) {
 
                         return {
-                            [ attribute ]: query[ attribute ] === 'true'
+                            [ attribute ]: query[ attribute ] === true
                         }
 
                     }
@@ -337,7 +382,7 @@
 
                 })
 
-                this.fieldsModel = allValues.reduce((left, right) => ({ ...right, ...left }))
+                this.fieldsModel = allValues.reduce((left, right) => ({ ...right, ...left }), {})
 
             },
             resetColumns() {
@@ -383,12 +428,31 @@
 
                 }
 
-                this.filterChanged()
+                if (removedFilters.length) {
+
+                    this.filterChanged()
+
+                }
+
+            },
+            decodeObject(encodedFilters) {
+
+                return JSON.parse(atob(encodedFilters))
+
+            },
+            encodeObject(data) {
+
+                return btoa(escapeUnicode(JSON.stringify(data)))
+
+            },
+            getEncodedQueryString() {
+
+                return this.encodeObject({ ...this.fieldsModel })
 
             },
             refreshResourceTable() {
 
-                this.updateQueryString({ ...this.fieldsModel })
+                this.updateQueryString({ mega_filter: observable.params = this.getEncodedQueryString() })
                 this.updateFilters()
 
                 this.$nextTick(async () => {

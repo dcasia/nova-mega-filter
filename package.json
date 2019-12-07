@@ -11,10 +11,11 @@
     },
     "devDependencies": {
         "cross-env": "^5.0.0",
-        "laravel-mix": "^1.0"
+        "laravel-mix": "^5.0",
+        "laravel-nova": "^1.0.9",
+        "vue-template-compiler": "^2.6.10"
     },
     "dependencies": {
-        "laravel-nova": "^1.0.9",
         "vue": "^2.5.0",
         "vue2-transitions": "^0.3.0"
     }
