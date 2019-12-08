@@ -106,7 +106,7 @@
 
                         <option :value="null" disabled selected>{{ __('Select Action') }}</option>
 
-                        <option v-for="action in actions"
+                        <option v-for="action in activeActions"
                                 :value="action.uriKey"
                                 :key="action.urikey"
                                 :selected="action.uriKey === selectedActionKey">
@@ -123,7 +123,7 @@
 
                         <div v-if="isLonelyAction">
 
-                            {{ actions[0].name }}
+                            {{ activeActions[0].name }}
 
                         </div>
 
@@ -208,7 +208,7 @@
 
             if (this.isLonelyAction) {
 
-                this.selectedActionKey = this.actions[ 0 ].uriKey
+                this.selectedActionKey = this.activeActions[ 0 ].uriKey
 
             }
 
@@ -236,7 +236,7 @@
             },
             hasActions() {
 
-                return this.actions.length > 0
+                return this.activeActions.length > 0
 
             },
             settings() {
@@ -244,7 +244,7 @@
                 return this.card.settings
 
             },
-            actions() {
+            activeActions() {
 
                 return this.card.actions
 
@@ -291,13 +291,13 @@
 
                 return this.card.columns
                     .filter(column => column.permanent)
-                    .map(({ attribute }) => ({ [ attribute ]: true }))
-                    .reduce((left, right) => ({ ...right, ...left }), {})
+                    .map(({ attribute }) => ( { [ attribute ]: true } ))
+                    .reduce((left, right) => ( { ...right, ...left } ), {})
 
             },
             isLonelyAction() {
 
-                return this.actions.length === 1
+                return this.activeActions.length === 1
 
             },
             isResourceTableLoading() {
@@ -382,7 +382,7 @@
 
                 })
 
-                this.fieldsModel = allValues.reduce((left, right) => ({ ...right, ...left }), {})
+                this.fieldsModel = allValues.reduce((left, right) => ( { ...right, ...left } ), {})
 
             },
             resetColumns() {

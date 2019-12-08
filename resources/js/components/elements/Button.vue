@@ -1,7 +1,7 @@
 <template>
 
     <button class="btn btn-default btn-primary cursor-pointer"
-         :class="{ 'btn-unselected': !state, 'btn-primary': state }">
+            :class="{ 'btn-unselected': !state, 'btn-primary': state }">
 
         <slot/>
 
