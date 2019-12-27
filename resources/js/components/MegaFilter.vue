@@ -1,6 +1,6 @@
 <template>
 
-    <card class="flex flex-col p-6" @dblclick.native.self="toggleAllSections">
+    <card class="mega-filter flex flex-col p-6" @dblclick.native.self="toggleAllSections">
 
         <div class="flex justify-between items-center">
 
@@ -36,7 +36,7 @@
 
         </div>
 
-        <CollapseTransition v-if="hasColumns">
+        <CollapseTransition class="mega-filter__columns" v-if="hasColumns">
 
             <Section v-if="sections.columns"
                      :title="settings.columnsSectionTitle"
@@ -64,7 +64,7 @@
 
         </CollapseTransition>
 
-        <CollapseTransition>
+        <CollapseTransition class="mega-filter__filters">
 
             <CollapseTransition v-if="hasFilters && this.sections.filters">
 
@@ -94,7 +94,7 @@
 
         </CollapseTransition>
 
-        <CollapseTransition v-if="hasActions">
+        <CollapseTransition class="mega-filter__actions" v-if="hasActions">
 
             <Section v-if="sections.actions" :title="settings.actionsSectionTitle">
 
@@ -168,20 +168,15 @@
 <script>
 
     import { CollapseTransition, FadeTransition } from 'vue2-transitions'
-    import { Filterable, InteractsWithQueryString } from 'laravel-nova'
+    import { Filterable } from 'laravel-nova'
     import Section from './elements/Section'
     import Button from './elements/Button'
-    import Vue from 'vue'
     import HandlesActions from '~~nova~~/mixins/HandlesActions'
     import { escapeUnicode } from '~~nova~~/util/escapeUnicode'
 
-    const observable = Vue.observable({ ready: false })
-
-    export { observable }
-
     export default {
         name: 'MegaFilter',
-        mixins: [ Filterable, InteractsWithQueryString, HandlesActions ],
+        mixins: [ Filterable, HandlesActions ],
         components: { Button, FadeTransition, CollapseTransition, Section },
         props: [
             'card',
@@ -189,14 +184,21 @@
             // 'resourceId',
             'resourceName'
         ],
+        created() {
+
+            Nova.$emit('useMegaFilter', true)
+
+        },
         data() {
+
+            const sections = this.getSectionsFromCache()
 
             return {
                 selectedActionKey: null,
                 message: null,
                 fieldsModel: {},
                 actionMessages: [],
-                sections: {
+                sections: sections || {
                     columns: this.card.settings.columnsActive,
                     filters: this.card.settings.filtersActive,
                     actions: this.card.settings.actionsActive
@@ -212,15 +214,14 @@
 
             }
 
-            const encodedFilter = this.$route.query.mega_filter
+            const encodedFilter = this.$route.query.megaFilter || this.resolveEncodedFiltersFromCache()
 
             this.initializeFieldsUsingObject(
                 encodedFilter ? this.decodeObject(encodedFilter) : {}
             )
 
-            observable.ready = true
-            observable.resourceName = this.resourceName
-            observable.params = encodedFilter
+            Nova.$emit('megaFilterEncodedQuery', encodedFilter)
+            Nova.$emit('reloadIndexResources')
 
         },
         computed: {
@@ -345,6 +346,39 @@
             }
         },
         methods: {
+            getCache(property) {
+                try {
+
+                    return JSON.parse(localStorage.getItem(this.card.cacheKey))[ property ]
+
+                } catch (error) {
+
+                    return null
+
+                }
+            },
+            getSectionsFromCache() {
+
+                return this.getCache('sections')
+
+            },
+            updateCache() {
+
+                const query = this.getEncodedQueryString()
+
+                localStorage.setItem(this.card.cacheKey, JSON.stringify({ query, sections: this.sections }))
+
+            },
+            resolveEncodedFiltersFromCache() {
+
+                return this.getCache('query')
+
+            },
+            updateQueryString(value) {
+
+                this.$router.push({ name: 'index-mega-filter', query: { ...this.$route.query, ...value } })
+
+            },
             actionFormData() {
 
                 const formData = new FormData()
@@ -369,7 +403,7 @@
                     if (data.hasOwnProperty(attribute)) {
 
                         return {
-                            [ attribute ]: query[ attribute ] === true
+                            [ attribute ]: data[ attribute ] === true
                         }
 
                     }
@@ -406,6 +440,8 @@
 
                 this.sections[ section ] = !this.sections[ section ]
 
+                this.updateCache()
+
             },
             toggleAllSections() {
 
@@ -414,6 +450,8 @@
                 this.sections.columns = !state
                 this.sections.filters = !state
                 this.sections.actions = !state
+
+                this.updateCache()
 
             },
             updateFilters() {
@@ -452,14 +490,15 @@
             },
             refreshResourceTable() {
 
-                this.updateQueryString({ mega_filter: observable.params = this.getEncodedQueryString() })
+                const encodedQuery = this.getEncodedQueryString()
+
+                Nova.$emit('megaFilterEncodedQuery', encodedQuery)
+
+                this.updateQueryString({ megaFilter: encodedQuery })
                 this.updateFilters()
+                this.updateCache()
 
-                this.$nextTick(async () => {
-
-                    await this.indexComponent.getResources()
-
-                })
+                this.$nextTick(() => Nova.$emit('reloadIndexResources'))
 
             }
         }

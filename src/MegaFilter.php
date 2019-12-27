@@ -124,9 +124,10 @@ class MegaFilter extends Card
     }
 
     /**
-     * Fake evert filter component so it doesnt show up on the default filter picker
+     * Fake every filter component so it doesnt show up on the default filter picker
      *
      * @param Filter $filter
+     *
      * @return Filter
      */
     public function mockFilter(Filter $filter): Filter
@@ -142,6 +143,11 @@ class MegaFilter extends Card
         return collect($this->attributes[ 'settings' ]);
     }
 
+    private function generateCacheKey(): string
+    {
+        return hash('md5', $this->columns()->pluck('attribute')->sort()->join(''));
+    }
+
     /**
      * Prepare the element for JSON serialization.
      *
@@ -153,7 +159,8 @@ class MegaFilter extends Card
             'settings' => $this->settings(),
             'actions' => $this->actions(),
             'columns' => $this->columns(),
-            'filters' => $this->filters()
+            'filters' => $this->filters(),
+            'cacheKey' => $this->generateCacheKey()
         ], parent::jsonSerialize());
     }
 }

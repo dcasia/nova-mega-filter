@@ -86,7 +86,7 @@ trait HasMegaFilterTrait
     {
 
         $card = $this->getMegaFilterCard($request);
-        $query = collect(json_decode(base64_decode($request->input('mega_filter')), true));
+        $query = collect(json_decode(base64_decode($request->query('megaFilter')), true));
 
         $attributes = $card->columns()->filter(function (Column $column) use ($query) {
 
