@@ -106,7 +106,7 @@
 
                         <option :value="null" disabled selected>{{ __('Select Action') }}</option>
 
-                        <option v-for="action in activeActions"
+                        <option v-for="action in actions"
                                 :value="action.uriKey"
                                 :key="action.urikey"
                                 :selected="action.uriKey === selectedActionKey">
@@ -123,12 +123,12 @@
 
                         <div v-if="isLonelyAction">
 
-                            {{ activeActions[0].name }}
+                            {{ actions[0].name }}
 
                         </div>
 
                         <div v-else>
-                            {{ __('Run Action on all matching resources (:count)', { count: selectedResourcesCount }) }}
+                            {{ __('Run action on all matching resources (:count)', { count: selectedResourcesCount }) }}
                         </div>
 
                     </button>
@@ -210,7 +210,7 @@
 
             if (this.isLonelyAction) {
 
-                this.selectedActionKey = this.activeActions[ 0 ].uriKey
+                this.selectedActionKey = this.actions[ 0 ].uriKey
 
             }
 
@@ -237,7 +237,7 @@
             },
             hasActions() {
 
-                return this.activeActions.length > 0
+                return this.actions.length > 0
 
             },
             settings() {
@@ -245,7 +245,7 @@
                 return this.card.settings
 
             },
-            activeActions() {
+            actions() {
 
                 return this.card.actions
 
@@ -298,7 +298,7 @@
             },
             isLonelyAction() {
 
-                return this.activeActions.length === 1
+                return this.actions.length === 1
 
             },
             isResourceTableLoading() {
