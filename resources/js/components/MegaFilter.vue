@@ -74,7 +74,7 @@
                          @reset="clearSelectedFilters">
 
                     <FadeTransition tag="card" group :duration="100"
-                                    class="filters w-full border border-50 bg-40 shadow-none p-4 flex flex-wrap">
+                                    class="filters w-full border border-50 bg-40 shadow-none p-4 flex flex-wrap justify-between">
 
                         <component class="flex flex-col inline-flex"
                                    :class="[ card.settings.filtersWidth ]"
