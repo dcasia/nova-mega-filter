@@ -8,7 +8,7 @@ Nova.booting((Vue, router, store) => {
 
         if (from.name === 'index') {
 
-            return next({ ...from, name: 'index-mega-filter' })
+            return next({ ...from, name: 'index-mega-filter', replace: true })
 
         }
 
