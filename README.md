@@ -94,6 +94,16 @@ MegaFilter::make([
 
 When using `->permanent()` every filter that the column may define will be also present
 
+Other column methods include the ability to have a column default checked
+
+```php
+MegaFilter::make([
+    'columns' => [
+        Column::make('Name')->checked() // Checked by default
+    ],
+])
+```
+
 ### Filters
 
 The `filters` key accepts an array of any instance of the default Nova filter class or third party. 
