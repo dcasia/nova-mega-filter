@@ -4,19 +4,19 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/digital-creative/nova-mega-filter)](https://packagist.org/packages/digital-creative/nova-mega-filter)
 [![License](https://img.shields.io/packagist/l/digital-creative/nova-mega-filter)](https://github.com/dcasia/nova-mega-filter/blob/master/LICENSE)
 
-This package allows you to control the columns and filters shown on your nova resources.
+Control how the columns and filters are shown on nova resources. Perfect for large resources & many filters.
 
-# Installation
+## Installation
 
-You can install the package via composer:
+Install the package via composer:
 
 ```
 composer require digital-creative/nova-mega-filter
 ```
 
-## Basic Usage
+## Quick start
 
-Basic demo showing the power of this field:
+Here's a very condensed guide to get you started while showing the power & possibilities of this field:
 
 ```php
 
@@ -28,23 +28,31 @@ class ExampleNovaResource extends Resource {
 
     use HasMegaFilterTrait; // Important!!
 
+    public function fields(Request $request)
+    {
+        return [
+            Text::make('Name'),
+            Boolean::make('Status'),
+            Date::make('Created at')
+        ];
+    }
+
     public function cards(Request $request)
     {
         return [
             MegaFilter::make([
                 'filters' => [
-                    new DateOfBirthFilter(),
-                    new UserTypeFilter()
+                    new StatusFilter(),
+                    new CreatedAtFilter()
                 ],
                 'columns' => [
-                    Column::make('Customer Name', 'name')->addFilter(new ActiveFilter()),
-                    Column::make('Assets'),
-                    Column::make('Payments')
+                    Column::make('Name'),
+                    Column::make('Status'),
+                    Column::make('Created at')->addFilter(new CreatedAtFilter())
                 ]
             ])
         ];
     }
-
 }
 ```
 
