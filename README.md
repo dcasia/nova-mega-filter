@@ -22,6 +22,7 @@ Basic demo showing the power of this field:
 
 use DigitalCreative\MegaFilter\MegaFilter;
 use DigitalCreative\MegaFilter\HasMegaFilterTrait;
+use DigitalCreative\MegaFilter\Column;
 
 class ExampleNovaResource extends Resource {
 
@@ -56,6 +57,7 @@ ability to toggle it on/off:
 
 ```php
 use DigitalCreative\MegaFilter\Column;
+use DigitalCreative\MegaFilter\HasMegaFilterTrait;
 use DigitalCreative\MegaFilter\MegaFilter;
 
 MegaFilter::make([
