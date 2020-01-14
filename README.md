@@ -4,7 +4,7 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/digital-creative/nova-mega-filter)](https://packagist.org/packages/digital-creative/nova-mega-filter)
 [![License](https://img.shields.io/packagist/l/digital-creative/nova-mega-filter)](https://github.com/dcasia/nova-mega-filter/blob/master/LICENSE)
 
-Control how the columns and filters are shown on nova resources. Perfect for large resources & many filters.
+Control how the columns, filters, and actions are shown on nova resources. Perfect for large resources & many filters.
 
 ## Installation
 
