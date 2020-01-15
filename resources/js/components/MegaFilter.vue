@@ -507,8 +507,10 @@
 
 <style lang="scss">
 
-    .mega-filter{
+    .mega-filter {
+
         height: auto
+
     }
 
     .filters h3 {
