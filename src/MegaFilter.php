@@ -132,7 +132,6 @@ class MegaFilter extends Card
      */
     public function mockFilter(Filter $filter): Filter
     {
-        $filter->withMeta([ 'component' => 'mega-filter-placeholder' ]);
         $filter->withMeta([ 'originalComponent' => $filter->component ]);
 
         return $filter;
