@@ -507,6 +507,10 @@
 
 <style lang="scss">
 
+    .mega-filter{
+        height: auto
+    }
+
     .filters h3 {
 
         background-color: transparent;
