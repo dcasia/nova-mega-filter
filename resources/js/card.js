@@ -1,5 +1,4 @@
 import { default as MegaFilter } from './components/MegaFilter.vue'
-import MegaFilterPlaceholder from './components/MegaFilterPlaceholder.vue'
 import ProxyIndex from './components/ProxyIndex.vue'
 
 Nova.booting((Vue, router, store) => {
@@ -26,6 +25,5 @@ Nova.booting((Vue, router, store) => {
     ])
 
     Vue.component('mega-filter', MegaFilter)
-    Vue.component('mega-filter-placeholder', MegaFilterPlaceholder)
 
 })
