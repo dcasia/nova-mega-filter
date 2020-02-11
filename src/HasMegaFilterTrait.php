@@ -4,6 +4,8 @@ namespace DigitalCreative\MegaFilter;
 
 use Illuminate\Support\Collection;
 use Laravel\Nova\Fields\Field;
+use Laravel\Nova\Http\Controllers\ActionController;
+use Laravel\Nova\Http\Controllers\FilterController;
 use Laravel\Nova\Http\Controllers\ResourceIndexController;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
@@ -19,9 +21,9 @@ trait HasMegaFilterTrait
     public function resolveActions(NovaRequest $request)
     {
 
-        if ($request->method() === 'POST') {
+        if ($this->shouldApplyMegaFilter($request) && $card = $this->getMegaFilterCard($request)) {
 
-            return parent::resolveActions($request)->merge($this->getMegaFilterCard($request)->actions());
+            return parent::resolveActions($request)->merge($card->actions());
 
         }
 
@@ -38,24 +40,32 @@ trait HasMegaFilterTrait
      */
     public function resolveFilters(NovaRequest $request)
     {
-        return parent::resolveFilters($request)->merge($this->getMegaFilterCard($request)->filters());
+
+        if ($this->shouldApplyMegaFilter($request) && $card = $this->getMegaFilterCard($request)) {
+
+            return parent::resolveFilters($request)->merge($card->filters());
+
+        }
+
+        return parent::resolveFilters($request);
+
     }
 
     public function availableFields(NovaRequest $request)
     {
 
-        $controller = $request->route()->controller;
         $fields = parent::availableFields($request);
+        $card = $this->getMegaFilterCard($request);
 
-        if (!($controller instanceof ResourceIndexController)) {
+        if ($this->shouldApplyMegaFilter($request) === false || blank($card)) {
 
             return $fields;
 
         }
 
-        $fieldsToShow = $this->getFilterState($request);
+        $fieldsToShow = $this->getFilterState($request, $card);
 
-        return $fields->filter(function ($field) use ($fieldsToShow) {
+        return $fields->filter(static function ($field) use ($fieldsToShow) {
 
             if ($field instanceof Field) {
 
@@ -77,18 +87,38 @@ trait HasMegaFilterTrait
         });
     }
 
-    private function getMegaFilterCard(NovaRequest $request): MegaFilter
+    private function shouldApplyMegaFilter(NovaRequest $request): bool
+    {
+
+        $controller = $request->route()->controller;
+
+        if ($controller instanceof ActionController && $request->method() === 'POST') {
+
+            return true;
+
+        }
+
+        if ($controller instanceof FilterController) {
+
+            return true;
+
+        }
+
+        return $request->route()->controller instanceof ResourceIndexController;
+
+    }
+
+    private function getMegaFilterCard(NovaRequest $request): ?MegaFilter
     {
         return collect($this->cards($request))->whereInstanceOf(MegaFilter::class)->first();
     }
 
-    private function getFilterState(NovaRequest $request)
+    private function getFilterState(NovaRequest $request, MegaFilter $card): Collection
     {
 
-        $card = $this->getMegaFilterCard($request);
         $query = collect(json_decode(base64_decode($request->query('megaFilter')), true));
 
-        $attributes = $card->columns()->filter(function (Column $column) use ($query) {
+        $attributes = $card->columns()->filter(static function (Column $column) use ($query) {
 
             if ($column->permanent) {
 
