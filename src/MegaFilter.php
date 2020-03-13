@@ -2,6 +2,7 @@
 
 namespace DigitalCreative\MegaFilter;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Laravel\Nova\Card;
 use Laravel\Nova\Filters\Filter;
@@ -56,6 +57,25 @@ class MegaFilter extends Card
     public function __construct(array $attributes)
     {
         $this->attributes = $this->array_merge_recursive_distinct($this->attributes, $attributes);
+    }
+
+    public function authorizedToSee(Request $request)
+    {
+
+        if (parent::authorizedToSee($request)) {
+
+            $this->attributes[ 'filters' ] = array_filter($this->attributes[ 'filters' ], function (Filter $filter) use ($request) {
+
+                return $filter->authorizedToSee($request);
+
+            });
+
+            return true;
+
+        }
+
+        return false;
+
     }
 
     private function array_merge_recursive_distinct(array &$array1, array &$array2): array
