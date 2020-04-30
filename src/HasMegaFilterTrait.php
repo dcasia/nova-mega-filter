@@ -6,6 +6,7 @@ use Illuminate\Support\Collection;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Http\Controllers\ActionController;
 use Laravel\Nova\Http\Controllers\FilterController;
+use Laravel\Nova\Http\Controllers\ResourceCountController;
 use Laravel\Nova\Http\Controllers\ResourceIndexController;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
@@ -104,7 +105,8 @@ trait HasMegaFilterTrait
 
         }
 
-        return $request->route()->controller instanceof ResourceIndexController;
+        return $controller instanceof ResourceIndexController
+            || $controller instanceof ResourceCountController;
 
     }
 
