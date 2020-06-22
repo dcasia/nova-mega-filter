@@ -292,8 +292,8 @@
 
                 return this.card.columns
                     .filter(column => column.permanent)
-                    .map(({ attribute }) => ( { [ attribute ]: true } ))
-                    .reduce((left, right) => ( { ...right, ...left } ), {})
+                    .map(({ attribute }) => ({ [ attribute ]: true }))
+                    .reduce((left, right) => ({ ...right, ...left }), {})
 
             },
             isLonelyAction() {
@@ -384,6 +384,7 @@
                 const formData = new FormData()
 
                 formData.append('columns', JSON.stringify(this.exportedColumns))
+                formData.append('filters', this.$route.query[ this.resourceName + '_filter' ])
 
                 return _.tap(formData, formData => {
 
@@ -416,7 +417,7 @@
 
                 })
 
-                this.fieldsModel = allValues.reduce((left, right) => ( { ...right, ...left } ), {})
+                this.fieldsModel = allValues.reduce((left, right) => ({ ...right, ...left }), {})
 
             },
             resetColumns() {
