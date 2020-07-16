@@ -4,6 +4,7 @@ namespace DigitalCreative\MegaFilter;
 
 use Illuminate\Support\Collection;
 use Laravel\Nova\Fields\Field;
+use Laravel\Nova\FilterDecoder;
 use Laravel\Nova\Http\Controllers\ActionController;
 use Laravel\Nova\Http\Controllers\FilterController;
 use Laravel\Nova\Http\Controllers\ResourceCountController;
@@ -118,9 +119,11 @@ trait HasMegaFilterTrait
     private function getFilterState(NovaRequest $request, MegaFilter $card): Collection
     {
 
-        $query = collect(json_decode(base64_decode($request->query('megaFilter')), true));
+        $filterDecoder = (new FilterDecoder($request->get('filters')))->decodeFromBase64String();
 
-        $attributes = $card->columns()->filter(static function (Column $column) use ($query) {
+        $value = collect($filterDecoder)->firstWhere('class', MegaFilterColumns::class)[ 'value' ];
+
+        $attributes = $card->columns()->filter(static function (Column $column) use ($value) {
 
             if ($column->permanent) {
 
@@ -128,7 +131,7 @@ trait HasMegaFilterTrait
 
             }
 
-            if ((is_bool($value = $query->get($column->attribute)))) {
+            if ((is_bool($value = $value[ $column->attribute ] ?? true))) {
 
                 return $value;
 

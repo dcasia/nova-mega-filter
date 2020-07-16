@@ -8,25 +8,19 @@
 
             <div>
 
-                <Button v-if="hasColumns"
-                        @click.native="toggleSection('columns')"
-                        :state="sections.columns">
+                <Button v-if="hasColumns" @click.native="toggleSection('columns')" :state="sections.columns">
 
                     {{ settings.columnsLabel }}
 
                 </Button>
 
-                <Button v-if="hasFilters"
-                        @click.native="toggleSection('filters')"
-                        :state="sections.filters">
+                <Button v-if="hasFilters" @click.native="toggleSection('filters')" :state="sections.filters">
 
                     {{ settings.filtersLabel }}
 
                 </Button>
 
-                <Button v-if="hasActions"
-                        @click.native="toggleSection('actions')"
-                        :state="sections.actions">
+                <Button v-if="hasActions" @click.native="toggleSection('actions')" :state="sections.actions">
 
                     {{ settings.actionsLabel }}
 
@@ -168,26 +162,25 @@
 <script>
 
     import { CollapseTransition, FadeTransition } from 'vue2-transitions'
-    import { Filterable } from 'laravel-nova'
+    import { Filterable, mapProps } from 'laravel-nova'
     import Section from './elements/Section'
     import Button from './elements/Button'
     import HandlesActions from '~~nova~~/mixins/HandlesActions'
     import { escapeUnicode } from '~~nova~~/util/escapeUnicode'
+    import _ from 'lodash'
 
     export default {
         name: 'MegaFilter',
         mixins: [ Filterable, HandlesActions ],
         components: { Button, FadeTransition, CollapseTransition, Section },
-        props: [
-            'card',
-            // 'resource',
-            // 'resourceId',
-            'resourceName'
-        ],
-        created() {
-
-            Nova.$emit('useMegaFilter', true)
-
+        props: {
+            card: { type: Object },
+            ...mapProps([
+                'resourceName',
+                'viaResource',
+                'viaResourceId',
+                'viaRelationship'
+            ])
         },
         data() {
 
@@ -198,6 +191,7 @@
                 message: null,
                 fieldsModel: {},
                 actionMessages: [],
+                filterKey: 'DigitalCreative\\MegaFilter\\MegaFilterColumns',
                 sections: sections || {
                     columns: this.card.settings.columnsActive,
                     filters: this.card.settings.filtersActive,
@@ -214,17 +208,22 @@
 
             }
 
-            const encodedFilter = this.$route.query.megaFilter || this.resolveEncodedFiltersFromCache()
+            const filter = this.$store.getters[ `${ this.resourceName }/getFilter` ](this.filterKey)
 
             this.initializeFieldsUsingObject(
-                encodedFilter ? this.decodeObject(encodedFilter) : {}
+                filter.currentValue || this.decodeObject(this.resolveEncodedFiltersFromCache())
             )
-
-            Nova.$emit('megaFilterEncodedQuery', encodedFilter)
-            Nova.$emit('reloadIndexResources')
 
         },
         computed: {
+            /**
+             * Get the name of the page query string variable.
+             */
+            pageParameter() {
+                return this.viaRelationship
+                    ? this.viaRelationship + '_page'
+                    : this.resourceName + '_page'
+            },
             hasColumns() {
 
                 return this.columns.length > 0
@@ -253,6 +252,12 @@
             filters() {
 
                 return this.card.filters.filter(filter => {
+
+                    if (filter.class === this.filterKey) {
+
+                        return false
+
+                    }
 
                     if (filter.hasOwnProperty('megaFilterFieldAttribute')) {
 
@@ -347,6 +352,7 @@
         },
         methods: {
             getCache(property) {
+
                 try {
 
                     return JSON.parse(localStorage.getItem(this.card.cacheKey))[ property ]
@@ -356,6 +362,7 @@
                     return null
 
                 }
+
             },
             getSectionsFromCache() {
 
@@ -376,7 +383,7 @@
             },
             updateQueryString(value) {
 
-                this.$router.push({ name: 'index-mega-filter', query: { ...this.$route.query, ...value } })
+                this.$router.replace({ query: { ...this.$route.query, ...value } })
 
             },
             actionFormData() {
@@ -455,6 +462,42 @@
                 this.updateCache()
 
             },
+            async clearSelectedFilters(lens) {
+
+                if (lens) {
+
+                    await this.$store.dispatch(`${ this.resourceName }/resetFilterState`, {
+                        resourceName: this.resourceName,
+                        lens
+                    })
+
+                } else {
+
+                    _.each(this.$store.getters[ `${ this.resourceName }/originalFilters` ], filter => {
+
+                        if (filter.class !== this.filterKey) {
+
+                            this.$store.commit(`${ this.resourceName }/updateFilterState`, {
+                                filterClass: filter.class,
+                                value: filter.currentValue
+                            })
+
+                        } else {
+
+                            this.updateColumnsFilter()
+
+                        }
+
+                    })
+
+                }
+
+                this.updateQueryString({
+                    [ this.pageParameter ]: 1,
+                    [ this.filterParameter ]: ''
+                })
+
+            },
             updateFilters() {
 
                 const removedFilters = this.card.filters.filter(filter => !this.filters.includes(filter))
@@ -476,7 +519,15 @@
             },
             decodeObject(encodedFilters) {
 
-                return JSON.parse(atob(encodedFilters))
+                try {
+
+                    return JSON.parse(atob(encodedFilters))
+
+                } catch (e) {
+
+                    return {}
+
+                }
 
             },
             encodeObject(data) {
@@ -491,19 +542,23 @@
             },
             refreshResourceTable() {
 
-                const encodedQuery = this.getEncodedQueryString()
-
-                Nova.$emit('megaFilterEncodedQuery', encodedQuery)
-
-                this.updateQueryString({ megaFilter: encodedQuery })
-                this.updateFilters()
+                this.updateColumnsFilter()
+                this.filterChanged()
                 this.updateCache()
 
-                this.$nextTick(() => Nova.$emit('reloadIndexResources'))
+            },
+            updateColumnsFilter() {
+
+                this.$store.commit(`${ this.resourceName }/updateFilterState`, {
+                    filterClass: this.filterKey,
+                    value: this.fieldsModel
+                })
 
             }
         }
+
     }
+
 </script>
 
 <style lang="scss">

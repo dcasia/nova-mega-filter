@@ -137,6 +137,7 @@ class MegaFilter extends Card
             /**
              * Register all permanent columns`s filters as "global filters"
              */
+            ->prepend(new MegaFilterColumns)
             ->prepend($columns->where('permanent', true)->pluck('filters'))
             ->prepend($this->attributes[ 'filters' ])
             ->flatten()
