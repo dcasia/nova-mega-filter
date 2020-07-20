@@ -9,6 +9,7 @@ use Laravel\Nova\Http\Controllers\ActionController;
 use Laravel\Nova\Http\Controllers\FilterController;
 use Laravel\Nova\Http\Controllers\ResourceCountController;
 use Laravel\Nova\Http\Controllers\ResourceIndexController;
+use Laravel\Nova\Http\Controllers\ResourceShowController;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 trait HasMegaFilterTrait
@@ -100,13 +101,15 @@ trait HasMegaFilterTrait
 
         }
 
-        if ($controller instanceof FilterController) {
+        if ($request->viaRelationship() ||
+            $controller instanceof ResourceShowController) {
 
-            return true;
+            return false;
 
         }
 
-        return $controller instanceof ResourceIndexController
+        return $controller instanceof FilterController
+            || $controller instanceof ResourceIndexController
             || $controller instanceof ResourceCountController;
 
     }
