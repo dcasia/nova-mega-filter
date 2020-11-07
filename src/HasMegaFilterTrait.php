@@ -134,7 +134,7 @@ trait HasMegaFilterTrait
 
             }
 
-            if ((is_bool($value = $value[ $column->attribute ] ?? true))) {
+            if (isset($value[ $column->attribute ]) && (is_bool($value = $value[ $column->attribute ]))) {
 
                 return $value;
 
