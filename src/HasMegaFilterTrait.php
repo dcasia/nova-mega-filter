@@ -124,7 +124,7 @@ trait HasMegaFilterTrait
 
         $filterDecoder = (new FilterDecoder($request->get('filters')))->decodeFromBase64String();
 
-        $value = collect($filterDecoder)->firstWhere('class', MegaFilterColumns::class)[ 'value' ];
+        $value = collect($filterDecoder)->collapse()->first(fn($value, $key) => $key === MegaFilterColumns::class);
 
         $attributes = $card->columns()->filter(static function (Column $column) use ($value) {
 
