@@ -124,7 +124,7 @@ trait HasMegaFilterTrait
 
         $filterDecoder = (new FilterDecoder($request->get('filters')))->decodeFromBase64String();
 
-        $value = collect($filterDecoder)->collapse()->first(fn($value, $key) => $key === MegaFilterColumns::class);
+        $value = collect($filterDecoder)->first(fn($filter) => $filter[ 'class' ] === MegaFilterColumns::class)[ 'value' ];
 
         $attributes = $card->columns()->filter(static function (Column $column) use ($value) {
 
@@ -134,7 +134,7 @@ trait HasMegaFilterTrait
 
             }
 
-            if ((is_bool($value = $value[ $column->attribute ] ?? true))) {
+            if (is_array($value) && is_bool($value = $value[ $column->attribute ])) {
 
                 return $value;
 
