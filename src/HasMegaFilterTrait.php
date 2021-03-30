@@ -43,8 +43,12 @@ trait HasMegaFilterTrait
      */
     public function resolveFilters(NovaRequest $request)
     {
-
         if ($this->shouldApplyMegaFilter($request) && $card = $this->getMegaFilterCard($request)) {
+            $filterColumns = $this->getFilterColumns();
+
+            if ($filterColumns) {
+                session(['mega-filter-columns' => $filterColumns]);
+            }
 
             return parent::resolveFilters($request)->merge($card->filters());
 
@@ -121,10 +125,11 @@ trait HasMegaFilterTrait
 
     private function getFilterState(NovaRequest $request, MegaFilter $card): Collection
     {
+        $value = $this->getFilterColumns();
 
-        $filterDecoder = (new FilterDecoder($request->get('filters')))->decodeFromBase64String();
-
-        $value = collect($filterDecoder)->first(fn($filter) => $filter[ 'class' ] === MegaFilterColumns::class)[ 'value' ];
+        if (! $value) {
+            $value = session('mega-filter-columns');
+        }
 
         $attributes = $card->columns()->filter(static function (Column $column) use ($value) {
 
@@ -146,5 +151,13 @@ trait HasMegaFilterTrait
 
         return $attributes->pluck('attribute')->values();
 
+    }
+
+    public function getFilterColumns()
+    {
+        $filterDecoder = (new FilterDecoder(request('filters')))->decodeFromBase64String();
+        $columns = collect($filterDecoder)->first(fn ($filter) => $filter[ 'class' ] === MegaFilterColumns::class);
+
+        return optional($columns)['value'];
     }
 }
