@@ -171,6 +171,11 @@ MegaFilter::make([
         'columnsActive' => false,
         'filtersActive' => true,
         'actionsActive' => true,
+
+        /**
+         * Show/Hide elements
+         */
+        'showHeader' => true,
         
         /**
          * Labels
