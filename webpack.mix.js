@@ -1,6 +1,8 @@
 const mix = require('laravel-mix')
+const path = require('path')
 
 mix.setPublicPath('dist')
+    .vue()
     .js('resources/js/card.js', 'js')
     .webpackConfig({
         resolve: {

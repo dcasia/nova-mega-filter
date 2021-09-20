@@ -39,6 +39,11 @@ class MegaFilter extends Card
             'actionsActive' => true,
 
             /**
+             * Show/Hide elements
+             */
+            'showHeader' => true,
+
+            /**
              * Labels
              */
             'headerLabel' => 'Menu',

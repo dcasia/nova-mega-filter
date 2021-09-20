@@ -2,7 +2,7 @@
 
     <card class="mega-filter flex flex-col p-6" @dblclick.native.self="toggleAllSections">
 
-        <div class="flex justify-between items-center">
+        <div v-if="card.settings.showHeader" class="flex justify-between items-center">
 
             <h4>{{ settings.headerLabel }}</h4>
 
