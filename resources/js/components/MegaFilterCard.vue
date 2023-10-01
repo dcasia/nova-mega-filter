@@ -1,7 +1,7 @@
 <template>
 
     <MegaFilter
-        class="mega-filter-card"
+        class="nova-mega-filter"
         :filters="card.filters"
         :realResource-name="resourceName"
         :resource-name="customResourceName"
@@ -39,10 +39,11 @@
 
 </script>
 
-<style lang="scss">
+<style>
 
-    .mega-filter-card {
+    .nova-mega-filter {
         min-height: auto;
+        padding-top: 0;
     }
 
 </style>

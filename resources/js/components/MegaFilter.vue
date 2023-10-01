@@ -1,25 +1,36 @@
 <template>
 
-    <div class="rounded bg-primary-500 p-1">
+    <Card class="nova-mega-filter rounded p-1 overflow-hidden transition"
+          :class="{ '--active': filtersAreApplied, '': !filtersAreApplied, '--expanded': collapsed }">
 
-        <div class="bg-gray-900 rounded p-4">
+        <div :class="{ 'h-8': collapsed, 'h-14': !collapsed }"
+             class="w-full transition-all flex items-center flex cursor-pointer">
 
-            <div v-if="filters.length">
+            <div class="toolbar-button pr-2 md:pr-3 flex flex-1 justify-between filter__header">
 
-                <div class="flex flex-wrap">
+                <button
+                    v-if="!filtersAreApplied"
+                    class="pb-1 pt-2 w-full block text-xs uppercase tracking-wide text-center font-bold focus:outline-none relative flex justify-end items-center"
+                    @click="collapsed = !collapsed">
 
-                    <div v-for="filter in filters" :key="filter.name" class="w-1/2">
-
-                        <component
-                            :is="filter.component"
-                            :filter-key="filter.class"
-                            :lens="lens"
-                            :resource-name="resourceName"
-                            @change="onChange"
-                            @input="onChange"
-                        />
-
+                    <div>
+                        {{ __('Filters') }}
                     </div>
+
+                    <Icon type="chevron-down" width="14" class="ml-1 transition-all"
+                          :class="{ 'rotate-180': collapsed }"/>
+
+                </button>
+
+                <div v-if="filtersAreApplied " class="w-full">
+
+                    <button
+                        class="py-2 w-full block text-xs uppercase tracking-wide text-center font-bold focus:outline-none"
+                        @click="clearFilters">
+
+                        {{ __('Reset Filters') }}
+
+                    </button>
 
                 </div>
 
@@ -27,7 +38,36 @@
 
         </div>
 
-    </div>
+        <Collapse :when="collapsed">
+
+            <div class="filter__inner bg-gray-900 rounded p-4">
+
+                <div v-if="filters.length">
+
+                    <div class="flex flex-wrap">
+
+                        <div v-for="filter in filters" :key="filter.name" class="w-1/2">
+
+                            <component
+                                :is="filter.component"
+                                :filter-key="filter.class"
+                                :lens="lens"
+                                :resource-name="resourceName"
+                                @change="onChange"
+                                @input="onChange"
+                            />
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </Collapse>
+
+    </Card>
 
 </template>
 
@@ -36,9 +76,11 @@
     import Filterable from '@/mixins/Filterable'
     import InteractsWithQueryString from '@/mixins/InteractsWithQueryString'
     import { cleanUpInterceptors, interceptors } from './RequestHighjacker'
+    import { Collapse } from 'vue-collapsed'
 
     export default {
         name: 'MegaFilter',
+        components: { Collapse },
         mixins: [ Filterable, InteractsWithQueryString ],
         emits: [ 'filter-changed' ],
         props: [
@@ -49,7 +91,19 @@
             'viaResourceId',
             'viaRelationship',
         ],
+        data() {
+            return {
+                collapsed: false,
+            }
+        },
         methods: {
+            clearFilters() {
+
+                this.clearSelectedFilters()
+
+                Nova.$emit('refresh-resources')
+
+            },
             onChange() {
 
                 this.filterChanged()
@@ -59,6 +113,9 @@
             },
         },
         computed: {
+            filtersAreApplied() {
+                return this.$store.getters[ `${ this.resourceName }/filtersAreApplied` ]
+            },
             initialEncodedFilters() {
                 return this.queryStringParams[ this.filterParameter ] || ''
             },
@@ -87,6 +144,9 @@
             await this.initializeState()
 
         },
+        beforeMount() {
+            this.collapsed = this.filtersAreApplied
+        },
         unmounted() {
             cleanUpInterceptors()
         },
@@ -94,6 +154,58 @@
 
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+
+    .dark .nova-mega-filter {
+
+        &.\--expanded {
+            background-color: rgba(var(--colors-gray-700));
+        }
+
+        &.\--active {
+
+            background-color: rgba(var(--colors-primary-500));
+
+            .filter__header {
+                color: rgba(var(--colors-gray-800));
+            }
+
+        }
+
+        .filter__inner {
+            background-color: rgba(var(--colors-gray-900));
+        }
+
+        .filter__header {
+            color: rgba(var(--colors-gray-400));
+        }
+
+    }
+
+    .nova-mega-filter {
+
+        &.\--expanded {
+            background-color: rgba(var(--colors-gray-300));
+        }
+
+        &.\--active {
+
+            background-color: rgba(var(--colors-primary-500));
+
+            .filter__header {
+                color: white;
+            }
+
+        }
+
+        .filter__inner {
+            background-color: white;
+        }
+
+        .filter__header {
+            color: rgba(var(--colors-gray-500));
+        }
+
+    }
 
 </style>

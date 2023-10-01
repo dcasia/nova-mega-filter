@@ -12,6 +12,7 @@
         "sass": "^1.68.0",
         "sass-loader": "^13.3.2",
         "tailwindcss": "^3.3.3",
+        "vue-collapsed": "^1.2.8",
         "vue-loader": "^17.2.2"
     }
 }
