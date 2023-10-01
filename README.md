@@ -50,6 +50,7 @@ And you are done!
 Previously this package also had the ability to toggle columns, but since the nova 4 upgrade this functionality has been
 moved away to its own package: https://github.com/dcasia/column-toggler
 
+---
 
 You can also add other fields alongside your Mega Filters, they will be rendered as usual:
 
@@ -76,9 +77,7 @@ class ExampleNovaResource extends Resource {
 }
 ```
 
-#### Note: 
-
-At the moment this package only works with a single Mega Filter per resource, adding multiple on the same resource may result in unexpected behavior.
+> Note: At the moment this package only works with a single Mega Filter per resource, adding multiple on the same resource may result in unexpected behavior.
 
 ## License
 
