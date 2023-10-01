@@ -13,8 +13,10 @@ class MegaFilterServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Nova::serving(function (ServingNova $event): void {
+
             Nova::script('nova-mega-filter', __DIR__ . '/../dist/js/card.js');
             Nova::style('nova-mega-filter', __DIR__ . '/../dist/css/card.css');
+
         });
     }
 }
