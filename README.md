@@ -7,8 +7,8 @@
 Display all your filters in a card instead of a tiny dropdown!.
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/dcasia/nova-slider-filter/nova4/screenshots/dark.png">
-  <img alt="Nova Mega Filter in Action" src="https://raw.githubusercontent.com/dcasia/nova-slider-filter/nova4/screenshots/light.png">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/dcasia/nova-mega-filter/nova4/screenshots/dark.png">
+  <img alt="Nova Mega Filter in Action" src="https://raw.githubusercontent.com/dcasia/nova-mega-filter/nova4/screenshots/light.png">
 </picture>
 
 # Installation
