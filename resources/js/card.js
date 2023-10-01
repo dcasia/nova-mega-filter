@@ -1,9 +1,10 @@
-import MegaFilter from './components/MegaFilter.vue'
-import MegaFilterPlaceholder from './components/MegaFilterPlaceholder.vue'
+import MegaFilterCard from './components/MegaFilterCard.vue'
+import resourceStore from '@/store/resources'
 
-Nova.booting((Vue, router, store) => {
+Nova.booting((Vue, store) => {
 
-    Vue.component('mega-filter', MegaFilter)
-    Vue.component('mega-filter-placeholder', MegaFilterPlaceholder)
+    store.registerModule('mega-filter-store', resourceStore)
+
+    Vue.component('mega-filter-card', MegaFilterCard)
 
 })
