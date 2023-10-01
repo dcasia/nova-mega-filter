@@ -20,18 +20,18 @@ Basic demo showing the power of this field:
 
 ```php
 
-use DigitalCreative\MegaFilter\MegaFilter;
-use DigitalCreative\MegaFilter\HasMegaFilterTrait;
+use DigitalCreative\MegaFilter\MegaFilterCard;
+use DigitalCreative\MegaFilter\MegaFilterTrait;
 use DigitalCreative\MegaFilter\Column;
 
 class ExampleNovaResource extends Resource {
 
-    use HasMegaFilterTrait; // Important!!
+    use MegaFilterTrait; // Important!!
 
     public function cards(Request $request)
     {
         return [
-            MegaFilter::make([
+            MegaFilterCard::make([
                 'filters' => [
                     new DateOfBirthFilter(),
                     new UserTypeFilter()
@@ -57,10 +57,10 @@ ability to toggle it on/off:
 
 ```php
 use DigitalCreative\MegaFilter\Column;
-use DigitalCreative\MegaFilter\HasMegaFilterTrait;
-use DigitalCreative\MegaFilter\MegaFilter;
+use DigitalCreative\MegaFilter\MegaFilterTrait;
+use DigitalCreative\MegaFilter\MegaFilterCard;
 
-MegaFilter::make([
+MegaFilterCard::make([
     'columns' => [
         Column::make($label),
         Column::make($label, $attribute),
