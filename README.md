@@ -24,7 +24,6 @@ composer require digital-creative/nova-mega-filter
 Basic demo showing the power of this package:
 
 ```php
-
 use DigitalCreative\MegaFilter\MegaFilter;
 use DigitalCreative\MegaFilter\MegaFilterTrait;
 
@@ -55,7 +54,6 @@ moved away to its own package: https://github.com/dcasia/column-toggler
 You can also add other fields alongside your Mega Filters, they will be rendered as usual:
 
 ```php
-
 use DigitalCreative\MegaFilter\MegaFilter;
 use DigitalCreative\MegaFilter\MegaFilterTrait;
 
@@ -74,6 +72,17 @@ class ExampleNovaResource extends Resource {
         ];
     }
 
+}
+```
+
+You can also set how many columns you want to display your filters:
+
+```php
+public function filters(RequestRequest $request): array
+{
+    return [
+        MegaFilter::make([ ... ])->columns(3),
+    ];
 }
 ```
 

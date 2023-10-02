@@ -1,6 +1,7 @@
 <template>
 
     <Card class="nova-mega-filter rounded p-1 overflow-hidden transition"
+          :style="{ '--columns-desktop': columns || 2 }"
           :class="{ '--active': filtersAreApplied, '': !filtersAreApplied, '--expanded': collapsed }">
 
         <div :class="{ 'h-8': collapsed, 'h-14': !collapsed }"
@@ -46,7 +47,7 @@
 
                     <div class="flex flex-wrap">
 
-                        <div v-for="filter in filters" :key="filter.name" class="w-1/2">
+                        <div v-for="filter in filters" :key="filter.name" class="filter__loop">
 
                             <component
                                 :is="filter.component"
@@ -64,6 +65,17 @@
                 </div>
 
             </div>
+
+            <Collapse :when="!filtersAreApplied">
+
+                <div class="flex justify-center items-center cursor-pointer"
+                     @click="collapsed = !collapsed">
+
+                    <Icon type="chevron-up" height="12" class="translate-y-[2px]"/>
+
+                </div>
+
+            </Collapse>
 
         </Collapse>
 
@@ -85,6 +97,7 @@
         emits: [ 'filter-changed' ],
         props: [
             'filters',
+            'columns',
             'realResourceName',
             'resourceName',
             'viaResource',
@@ -180,6 +193,12 @@
             color: rgba(var(--colors-gray-400));
         }
 
+        .filter__loop {
+            &:hover {
+                @apply border-gray-800;
+            }
+        }
+
     }
 
     .nova-mega-filter {
@@ -204,6 +223,30 @@
 
         .filter__header {
             color: rgba(var(--colors-gray-500));
+        }
+
+        --columns-mobile: 1;
+        --columns-desktop: 2;
+
+        .filter__loop {
+
+            width: calc(100% / var(--columns-mobile));
+            margin: 1px;
+
+            @apply border border-transparent rounded transition-all;
+
+            &:hover {
+                @apply border-gray-200;
+            }
+
+        }
+
+        @screen lg {
+
+            .filter__loop {
+                width: calc(100% / var(--columns-desktop) - 2px);
+            }
+
         }
 
     }
