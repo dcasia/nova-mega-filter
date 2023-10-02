@@ -10,10 +10,12 @@ use Laravel\Nova\Http\Controllers\LensFilterController;
 use Laravel\Nova\Http\Requests\CardRequest;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Makeable;
+use Laravel\Nova\Metable;
 
 class MegaFilter extends MergeValue
 {
     use Makeable;
+    use Metable;
 
     public function __construct(array $data)
     {
@@ -24,10 +26,15 @@ class MegaFilter extends MergeValue
         }
 
         if ($this->request() instanceof CardRequest) {
-            $data = [ new MegaFilterFilterWrapper($data) ];
+            $data = [ new MegaFilterFilterWrapper($this, $data) ];
         }
 
         parent::__construct($data);
+    }
+
+    public function columns(int $columns): self
+    {
+        return $this->withMeta([ 'columns' => $columns ]);
     }
 
     private function request(): NovaRequest

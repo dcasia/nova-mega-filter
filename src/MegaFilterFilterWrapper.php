@@ -7,13 +7,16 @@ namespace DigitalCreative\MegaFilter;
 class MegaFilterFilterWrapper
 {
     public function __construct(
-        public array $filters,
+        private readonly MegaFilter $megaFilter,
+        private readonly array $filters,
     )
     {
     }
 
     public function toCard(): MegaFilterCard
     {
-        return MegaFilterCard::make()->addFilters($this->filters);
+        return MegaFilterCard::make()
+            ->addFilters($this->filters)
+            ->withMeta($this->megaFilter->meta());
     }
 }

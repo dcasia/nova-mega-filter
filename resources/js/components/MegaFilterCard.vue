@@ -3,6 +3,7 @@
     <MegaFilter
         class="nova-mega-filter"
         :filters="card.filters"
+        :columns="card.columns"
         :realResource-name="resourceName"
         :resource-name="customResourceName"
         :via-resource="viaResource"
