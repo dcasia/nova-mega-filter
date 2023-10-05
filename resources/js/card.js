@@ -1,10 +1,20 @@
 import MegaFilterCard from './components/MegaFilterCard.vue'
-import resourceStore from '@/store/resources'
+import { registerMixin } from './components/MegaFilter'
 
-Nova.booting((Vue, store) => {
+Nova.booting(app => {
 
-    store.registerModule('mega-filter-store', resourceStore)
+    const componentFn = app.component
 
-    Vue.component('mega-filter-card', MegaFilterCard)
+    app.component = function (name, component) {
+
+        if (name === 'FilterMenu') {
+            registerMixin(component)
+        }
+
+        return componentFn.call(this, name, component)
+
+    }
+
+    app.component('mega-filter-card', MegaFilterCard)
 
 })

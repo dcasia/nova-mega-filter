@@ -87,8 +87,8 @@
 
     import Filterable from '@/mixins/Filterable'
     import InteractsWithQueryString from '@/mixins/InteractsWithQueryString'
-    import { cleanUpInterceptors, interceptors } from './RequestHighjacker'
     import { Collapse } from 'vue-collapsed'
+    import { filtersAreApplied, megaFilterOnly } from './MegaFilter'
 
     export default {
         name: 'MegaFilter',
@@ -98,7 +98,6 @@
         props: [
             'filters',
             'columns',
-            'realResourceName',
             'resourceName',
             'viaResource',
             'viaResourceId',
@@ -127,7 +126,7 @@
         },
         computed: {
             filtersAreApplied() {
-                return this.$store.getters[ `${ this.resourceName }/filtersAreApplied` ]
+                return filtersAreApplied(this.$store, this.resourceName, megaFilterOnly)
             },
             initialEncodedFilters() {
                 return this.queryStringParams[ this.filterParameter ] || ''
@@ -135,33 +134,14 @@
             pageParameter() {
                 return this.viaRelationship
                     ? this.viaRelationship + '_page'
-                    : this.realResourceName + '_page'
+                    : this.resourceName + '_page'
             },
         },
         async created() {
-
-            interceptors.push(config => {
-
-                if (config.params === undefined || config.params === null) {
-                    config.params = {}
-                }
-
-                if (config.method === 'get' && config.url === `/nova-api/${ this.realResourceName }`) {
-                    config.params.filters = this.encodedFilters
-                }
-
-                return config
-
-            })
-
             await this.initializeState()
-
         },
         beforeMount() {
             this.collapsed = this.filtersAreApplied
-        },
-        unmounted() {
-            cleanUpInterceptors()
         },
     }
 

@@ -2,10 +2,10 @@
 
     <MegaFilter
         class="nova-mega-filter"
+        :lens="lens"
         :filters="card.filters"
         :columns="card.columns"
-        :realResource-name="resourceName"
-        :resource-name="customResourceName"
+        :resource-name="resourceName"
         :via-resource="viaResource"
         :via-resource-id="viaResourceId"
         :via-relationship="viaRelationship"
@@ -22,19 +22,19 @@
         components: { MegaFilter },
         props: [
             'card',
+            'lens',
             'resourceName',
             'viaResource',
             'viaResourceId',
             'viaRelationship',
         ],
         created() {
-            this.$store.commit(`${ this.customResourceName }/clearFilters`)
-            this.$store.commit(`${ this.customResourceName }/storeFilters`, this.card.filters)
-        },
-        computed: {
-            customResourceName() {
-                return 'mega-filter-store'
-            },
+
+            const standardFilters = this.$store.getters[ `${ this.resourceName }/originalFilters` ]
+            const merged = standardFilters.concat(this.card.filters.map(filter => ({ ...filter, megaFilter: true })))
+
+            this.$store.commit(`${ this.resourceName }/storeFilters`, merged)
+
         },
     }
 
