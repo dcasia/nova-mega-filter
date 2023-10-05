@@ -4,16 +4,12 @@ export function filtersAreApplied(store, resourceName, filterFunction) {
 
     const filters = store.getters[ `${ resourceName }/filters` ].filter(filterFunction)
 
-    const response = reduce(filters, (result, filter) => {
+    return reduce(filters, (result, filter) => {
         const originalFilter = store.getters[ `${ resourceName }/getOriginalFilter` ](filter.class)
         const originalFilterCloneValue = JSON.stringify(originalFilter.currentValue)
         const currentFilterCloneValue = JSON.stringify(filter.currentValue)
         return currentFilterCloneValue === originalFilterCloneValue ? result : result + 1
     }, 0)
-
-    console.log(filters, resourceName, response)
-
-    return response
 
 }
 
