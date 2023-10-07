@@ -94,6 +94,7 @@ Please give a ⭐️ if this project helped you!
 
 ### Other Packages You Might Like
 
+- [Collapsible Resource Manager](https://github.com/dcasia/collapsible-resource-manager) - Provides an easy way to order and group your resources on the sidebar.
 - [Resource Navigation Tab](https://github.com/dcasia/resource-navigation-tab) - Organize your resource fields into tabs.
 - [Resource Navigation Link](https://github.com/dcasia/resource-navigation-link) - Create links to internal or external resources.
 - [Nova Mega Filter](https://github.com/dcasia/nova-mega-filter) - Display all your filters in a card instead of a tiny dropdown!
