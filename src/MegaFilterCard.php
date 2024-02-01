@@ -14,9 +14,4 @@ class MegaFilterCard extends Card
     {
         return 'mega-filter-card';
     }
-
-    public function addFilters(array $filters): self
-    {
-        return $this->withMeta([ 'filters' => $filters ]);
-    }
 }
