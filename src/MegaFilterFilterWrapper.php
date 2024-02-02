@@ -7,8 +7,8 @@ namespace DigitalCreative\MegaFilter;
 class MegaFilterFilterWrapper
 {
     public function __construct(
-        private readonly MegaFilter $megaFilter,
-        private readonly array $filters,
+        private MegaFilter $megaFilter,
+        private array $filters,
     )
     {
     }
@@ -16,7 +16,7 @@ class MegaFilterFilterWrapper
     public function toCard(): MegaFilterCard
     {
         return MegaFilterCard::make()
-            ->addFilters($this->filters)
+            ->filters($this->filters)
             ->withMeta($this->megaFilter->meta());
     }
 }

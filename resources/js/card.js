@@ -1,5 +1,5 @@
 import MegaFilterCard from './components/MegaFilterCard.vue'
-import { registerMixin } from './components/MegaFilter'
+import { resetComputed } from './components/MegaFilter'
 
 Nova.booting(app => {
 
@@ -7,8 +7,8 @@ Nova.booting(app => {
 
     app.component = function (name, component) {
 
-        if (name === 'FilterMenu') {
-            registerMixin(component)
+        if (name === 'ResourceTableToolbar') {
+            resetComputed(component)
         }
 
         return componentFn.call(this, name, component)

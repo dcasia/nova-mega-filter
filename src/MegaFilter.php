@@ -5,8 +5,7 @@ declare(strict_types = 1);
 namespace DigitalCreative\MegaFilter;
 
 use Illuminate\Http\Resources\MergeValue;
-use Laravel\Nova\Http\Controllers\FilterController;
-use Laravel\Nova\Http\Controllers\LensFilterController;
+use Laravel\Nova\Filters\Filter;
 use Laravel\Nova\Http\Requests\CardRequest;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Makeable;
@@ -14,22 +13,14 @@ use Laravel\Nova\Metable;
 
 class MegaFilter extends MergeValue
 {
-    use Makeable;
-    use Metable;
+    use Makeable, Metable;
 
-    public function __construct(array $data)
+    public function __construct(array $filters)
     {
-        $controller = $this->request()->route()->getControllerClass();
-
-        if (in_array($controller, [ FilterController::class, LensFilterController::class ])) {
-            $data = [];
-        }
-
-        if ($this->request() instanceof CardRequest) {
-            $data = [ new MegaFilterFilterWrapper($this, $data) ];
-        }
-
-        parent::__construct($data);
+        parent::__construct(match (true) {
+            $this->isCardRequest() => $this->toFilterWrapper($filters),
+            default => $this->addFlagToFilters($filters),
+        });
     }
 
     public function columns(int $columns): self
@@ -37,8 +28,30 @@ class MegaFilter extends MergeValue
         return $this->withMeta([ 'columns' => $columns ]);
     }
 
-    private function request(): NovaRequest
+    public function label(string $label): self
     {
-        return resolve(NovaRequest::class);
+        return $this->withMeta([ 'label' => $label ]);
+    }
+
+    private function isCardRequest(): bool
+    {
+        return resolve(NovaRequest::class) instanceof CardRequest;
+    }
+
+    private function toFilterWrapper(array $filters): array
+    {
+        return [
+            new MegaFilterFilterWrapper(
+                megaFilter: $this,
+                filters: collect($filters)->map(fn (Filter $filter) => $filter::class)->toArray(),
+            ),
+        ];
+    }
+
+    private function addFlagToFilters(array $filters): array
+    {
+        return collect($filters)
+            ->map(fn (Filter $filter) => $filter->withMeta([ 'megaFilter' => true ]))
+            ->all();
     }
 }
