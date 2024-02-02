@@ -36,7 +36,7 @@ export default {
             )
         },
         filtersAreApplied() {
-            return activeFilterCount(this.$store, this.resourceName, this.filters)
+            return activeFilterCount(this.$store, this.resourceName, this.filters) > 0
         },
         initialEncodedFilters() {
             return this.queryStringParams[ this.filterParameter ] || ''
