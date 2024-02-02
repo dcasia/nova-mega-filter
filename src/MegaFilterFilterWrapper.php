@@ -7,8 +7,8 @@ namespace DigitalCreative\MegaFilter;
 class MegaFilterFilterWrapper
 {
     public function __construct(
-        private readonly MegaFilter $megaFilter,
-        private readonly array $filters,
+        private MegaFilter $megaFilter,
+        private array $filters,
     )
     {
     }

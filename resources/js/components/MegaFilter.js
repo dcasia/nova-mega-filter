@@ -1,6 +1,6 @@
 import reduce from 'lodash/reduce'
 
-export function withoutMegaFilter(filter) {
+function withoutMegaFilter(filter) {
     return filter.megaFilter !== true
 }
 
