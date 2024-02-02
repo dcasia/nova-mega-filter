@@ -19,7 +19,7 @@ class MegaFilter extends MergeValue
     {
         parent::__construct(match (true) {
             $this->isCardRequest() => $this->toFilterWrapper($filters),
-            default => $this->addFlagToFilters($filters)
+            default => $this->addFlagToFilters($filters),
         });
     }
 
@@ -41,18 +41,17 @@ class MegaFilter extends MergeValue
     private function toFilterWrapper(array $filters): array
     {
         return [
-            new MegaFilterFilterWrapper($this, collect($filters)->map(
-                fn(Filter $filter) => $filter::class
-            )->toArray()),
+            new MegaFilterFilterWrapper(
+                megaFilter: $this,
+                filters: collect($filters)->map(fn (Filter $filter) => $filter::class)->toArray(),
+            ),
         ];
     }
 
     private function addFlagToFilters(array $filters): array
     {
-        return collect($filters)->map(
-            fn(Filter $filter) => $filter->withMeta([
-                'megaFilter' => true,
-            ])
-        )->all();
+        return collect($filters)
+            ->map(fn (Filter $filter) => $filter->withMeta([ 'megaFilter' => true ]))
+            ->all();
     }
 }

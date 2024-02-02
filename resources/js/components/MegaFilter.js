@@ -9,20 +9,21 @@ export function megaFilterOnly(filter) {
 }
 
 export function filtered(store, resource, callback) {
-    return store.getters[ `${resource}/filters` ].filter(callback)
+    return store.getters[ `${ resource }/filters` ].filter(callback)
 }
 
 export function activeFilterCount(store, resource, filters) {
 
     return reduce(filters, (result, filter) => {
-        const originalFilter = store.getters[ `${resource}/getOriginalFilter` ](filter.class)
-        const originalFilterCloneValue = JSON.stringify(
-            originalFilter.currentValue
-        )
+
+        const originalFilter = store.getters[ `${ resource }/getOriginalFilter` ](filter.class)
+        const originalFilterCloneValue = JSON.stringify(originalFilter.currentValue)
         const currentFilterCloneValue = JSON.stringify(filter.currentValue)
+
         return currentFilterCloneValue === originalFilterCloneValue
             ? result
             : result + 1
+
     }, 0)
 
 }

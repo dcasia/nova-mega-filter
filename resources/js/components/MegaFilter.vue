@@ -85,125 +85,125 @@
 
 <script>
 
-import { Collapse } from 'vue-collapsed'
+    import { Collapse } from 'vue-collapsed'
 
-export default {
-    name: 'MegaFilter',
-    components: { Collapse },
-    emits: [
-        'filter-changed',
-        'clear-selected-filters',
-    ],
-    props: {
-        filtersAreApplied: Boolean,
-        filters: Array,
-        columns: Number,
-        label: String,
-        resourceName: String,
-        lens: { type: String, default: '' },
-    },
-    data() {
-        return {
-            collapsed: false,
-        }
-    },
-    methods: {
-        clearFilters() {
-            this.$emit('clear-selected-filters')
+    export default {
+        name: 'MegaFilter',
+        components: { Collapse },
+        emits: [
+            'filter-changed',
+            'clear-selected-filters',
+        ],
+        props: {
+            filtersAreApplied: Boolean,
+            filters: Array,
+            columns: Number,
+            label: String,
+            resourceName: String,
+            lens: { type: String, default: '' },
         },
-        onChange() {
-            this.$emit('filter-changed')
+        data() {
+            return {
+                collapsed: false,
+            }
         },
-    },
-    beforeMount() {
-        this.collapsed = this.filtersAreApplied
-    },
-}
+        methods: {
+            clearFilters() {
+                this.$emit('clear-selected-filters')
+            },
+            onChange() {
+                this.$emit('filter-changed')
+            },
+        },
+        beforeMount() {
+            this.collapsed = this.filtersAreApplied
+        },
+    }
 
 </script>
 
 <style lang="scss" scoped>
 
-.dark .nova-mega-filter {
+    .dark .nova-mega-filter {
 
-    &.\--expanded {
-        background-color: rgba(var(--colors-gray-700));
-    }
+        &.\--expanded {
+            background-color: rgba(var(--colors-gray-700));
+        }
 
-    &.\--active {
+        &.\--active {
 
-        background-color: rgba(var(--colors-primary-500));
+            background-color: rgba(var(--colors-primary-500));
+
+            .filter__header {
+                color: rgba(var(--colors-gray-800));
+            }
+
+        }
+
+        .filter__inner {
+            background-color: rgba(var(--colors-gray-900));
+        }
 
         .filter__header {
-            color: rgba(var(--colors-gray-800));
+            color: rgba(var(--colors-gray-400));
         }
-
-    }
-
-    .filter__inner {
-        background-color: rgba(var(--colors-gray-900));
-    }
-
-    .filter__header {
-        color: rgba(var(--colors-gray-400));
-    }
-
-    .filter__loop {
-        &:hover {
-            @apply border-gray-800;
-        }
-    }
-
-}
-
-.nova-mega-filter {
-
-    &.\--expanded {
-        background-color: rgba(var(--colors-gray-300));
-    }
-
-    &.\--active {
-
-        background-color: rgba(var(--colors-primary-500));
-
-        .filter__header {
-            color: white;
-        }
-
-    }
-
-    .filter__inner {
-        background-color: white;
-    }
-
-    .filter__header {
-        color: rgba(var(--colors-gray-500));
-    }
-
-    --columns-mobile: 1;
-    --columns-desktop: 2;
-
-    .filter__loop {
-
-        width: calc(100% / var(--columns-mobile));
-        margin: 1px;
-
-        @apply border border-transparent rounded transition-all;
-
-        &:hover {
-            @apply border-gray-200;
-        }
-
-    }
-
-    @screen lg {
 
         .filter__loop {
-            width: calc(100% / var(--columns-desktop) - 2px);
+            &:hover {
+                @apply border-gray-800;
+            }
         }
 
     }
 
-}
+    .nova-mega-filter {
+
+        &.\--expanded {
+            background-color: rgba(var(--colors-gray-300));
+        }
+
+        &.\--active {
+
+            background-color: rgba(var(--colors-primary-500));
+
+            .filter__header {
+                color: white;
+            }
+
+        }
+
+        .filter__inner {
+            background-color: white;
+        }
+
+        .filter__header {
+            color: rgba(var(--colors-gray-500));
+        }
+
+        --columns-mobile: 1;
+        --columns-desktop: 2;
+
+        .filter__loop {
+
+            width: calc(100% / var(--columns-mobile));
+            margin: 1px;
+
+            @apply border border-transparent rounded transition-all;
+
+            &:hover {
+                @apply border-gray-200;
+            }
+
+        }
+
+        @screen lg {
+
+            .filter__loop {
+                width: calc(100% / var(--columns-desktop) - 2px);
+            }
+
+        }
+
+    }
 
 </style>

@@ -15,45 +15,46 @@
 </template>
 
 <script>
-import Filterable from '@/mixins/Filterable'
-import InteractsWithQueryString from '@/mixins/InteractsWithQueryString'
-import MegaFilter from './MegaFilter.vue'
-import { activeFilterCount, filtered, megaFilterOnly } from './MegaFilter'
 
-export default {
-    name: 'MegaFilterCard',
-    components: { MegaFilter },
-    mixins: [ Filterable, InteractsWithQueryString ],
-    props: [
-        'card',
-        'lens',
-        'resourceName',
-    ],
-    computed: {
-        filters() {
-            return filtered(this.$store, this.resourceName, megaFilterOnly).filter(
-                filter => this.card.filters.includes(filter.class)
-            )
+    import Filterable from '@/mixins/Filterable'
+    import InteractsWithQueryString from '@/mixins/InteractsWithQueryString'
+    import MegaFilter from './MegaFilter.vue'
+    import { activeFilterCount, filtered, megaFilterOnly } from './MegaFilter'
+
+    export default {
+        name: 'MegaFilterCard',
+        components: { MegaFilter },
+        mixins: [ Filterable, InteractsWithQueryString ],
+        props: [
+            'card',
+            'lens',
+            'resourceName',
+        ],
+        computed: {
+            filters() {
+                return filtered(this.$store, this.resourceName, megaFilterOnly).filter(
+                    filter => this.card.filters.includes(filter.class),
+                )
+            },
+            filtersAreApplied() {
+                return activeFilterCount(this.$store, this.resourceName, this.filters) > 0
+            },
+            initialEncodedFilters() {
+                return this.queryStringParams[ this.filterParameter ] || ''
+            },
         },
-        filtersAreApplied() {
-            return activeFilterCount(this.$store, this.resourceName, this.filters) > 0
+        created() {
+            this.initializeState(this.lens || null)
         },
-        initialEncodedFilters() {
-            return this.queryStringParams[ this.filterParameter ] || ''
-        },
-    },
-    created() {
-        this.initializeState(this.lens || null)
     }
-}
 
 </script>
 
 <style>
 
-.nova-mega-filter {
-    min-height: auto;
-    padding-top: 0;
-}
+    .nova-mega-filter {
+        min-height: auto;
+        padding-top: 0;
+    }
 
 </style>
