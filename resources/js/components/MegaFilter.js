@@ -12,9 +12,7 @@ export function filtered(store, resource, callback) {
     return store.getters[ `${resource}/filters` ].filter(callback)
 }
 
-export function activeFilterCount(store, resource, callback) {
-
-    const filters = filtered(store, resource, callback)
+export function activeFilterCount(store, resource, filters) {
 
     return reduce(filters, (result, filter) => {
         const originalFilter = store.getters[ `${resource}/getOriginalFilter` ](filter.class)
@@ -40,7 +38,7 @@ export function resetComputed(component) {
     }
 
     component.computed.activeFilterCount = function () {
-        return activeFilterCount(this.$store, this.resourceName, withoutMegaFilter)
+        return activeFilterCount(this.$store, this.resourceName, this.filters)
     }
 
 }

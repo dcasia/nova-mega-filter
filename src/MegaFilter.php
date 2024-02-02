@@ -19,7 +19,11 @@ class MegaFilter extends MergeValue
     public function __construct(array $data)
     {
         if ($this->request() instanceof CardRequest) {
-            $data = [ new MegaFilterFilterWrapper($this) ];
+            $data = [
+                new MegaFilterFilterWrapper(
+                    $this, collect($data)->map(fn(Filter $filter) => $filter::class)->toArray()
+                )
+            ];
         } else {
 
             $data = collect($data)->map(fn(Filter $filter) => $filter->withMeta([
@@ -34,6 +38,11 @@ class MegaFilter extends MergeValue
     public function columns(int $columns): self
     {
         return $this->withMeta([ 'columns' => $columns ]);
+    }
+
+    public function label(string $label): self
+    {
+        return $this->withMeta([ 'label' => $label ]);
     }
 
     private function request(): NovaRequest

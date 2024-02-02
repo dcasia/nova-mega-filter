@@ -15,7 +15,7 @@
                     @click="collapsed = !collapsed">
 
                     <span>
-                        {{ __('Filters') }}
+                        {{ label ?? __('Filters') }}
                     </span>
 
                     <Icon type="chevron-down" width="14" class="ml-1 transition-all"
@@ -98,6 +98,7 @@ export default {
         filtersAreApplied: Boolean,
         filters: Array,
         columns: Number,
+        label: String,
         resourceName: String,
         lens: { type: String, default: '' },
     },

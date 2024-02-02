@@ -5,6 +5,7 @@
         :lens="lens"
         :filters="filters"
         :columns="card.columns"
+        :label="card.label"
         :resource-name="resourceName"
         :filters-are-applied="filtersAreApplied"
         @filter-changed="filterChanged"
@@ -30,10 +31,12 @@ export default {
     ],
     computed: {
         filters() {
-            return filtered(this.$store, this.resourceName, megaFilterOnly)
+            return filtered(this.$store, this.resourceName, megaFilterOnly).filter(
+                filter => this.card.filters.includes(filter.class)
+            )
         },
         filtersAreApplied() {
-            return activeFilterCount(this.$store, this.resourceName, megaFilterOnly)
+            return activeFilterCount(this.$store, this.resourceName, this.filters)
         },
         initialEncodedFilters() {
             return this.queryStringParams[ this.filterParameter ] || ''
